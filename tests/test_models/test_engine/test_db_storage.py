@@ -16,7 +16,7 @@ from models.state import State
 from models.user import User
 import json
 import os
-import pep8
+import pep8 as pycodestyle
 import unittest
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
@@ -68,6 +68,7 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
+@unittest.skipIf(models.storage_t != 'db', "not testing db storage")
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
@@ -86,3 +87,20 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_dbstorage_get(self):
+        """Testing Get method"""
+        myObject = State(name="Alabama")
+        myObject.save()
+        state = models.storage.get("State", str(myObject.id))
+        self.assertEqual(state.name, "Alabama")
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_dbstorage_count(self):
+        """Testing Count method"""
+        oldCount = models.storage.count("State")
+        myObject = State(name="Alabama")
+        myObject.save()
+        newCount = models.storage.count("State")
+        self.assertEqual(oldCount + 1, newCount)

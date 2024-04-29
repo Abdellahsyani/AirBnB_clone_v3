@@ -16,7 +16,7 @@ from models.state import State
 from models.user import User
 import json
 import os
-import pep8
+import pep8 as pycodestyle
 import unittest
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
@@ -68,6 +68,7 @@ test_file_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
+@unittest.skipIf(models.storage_t == 'db', "not testing file storage")
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
@@ -113,3 +114,26 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', 'not testing file storage')
+    def test_filestorage_get(self):
+        """Testing Get method"""
+        fstorage = FileStorage()
+        myObject = State()
+        myObject.name = "Alabama"
+        fstorage.new(myObject)
+        myId = myObject.id
+        fstorage.save()
+        state = fstorage.get("State", myId)
+        self.assertEqual(state.name, "Alabama")
+
+    @unittest.skipIf(models.storage_t == 'db', 'not testing file storage')
+    def test_filestorage_count(self):
+        """Testing Count method"""
+        fstorage = FileStorage()
+        oldCount = fstorage.count("State")
+        myObject = State(name="Alabama")
+        fstorage.new(myObject)
+        fstorage.save()
+        newCount = fstorage.count("State")
+        self.assertEqual(oldCount + 1, newCount)
