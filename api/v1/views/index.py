@@ -11,6 +11,7 @@ def attain_status():
     """/api/v1/status route"""
     return jsonify(status='OK')
 
+
 @app_views.route("/stats", strict_slashes=False)
 def stats():
     """/api/v1/stats route"""
