@@ -3,17 +3,25 @@
 
 from models import storage
 from api.v1.views import app_views
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, jsonify
 from os import getenv
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
+cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
 @app.treadown_appcontext
 def treadown_appcontext():
     """call the storage"""
     storage.close()
+
+@app.errorhandler(404)
+def not_found(error):
+    """handeling not found page (error 404)"""
+    response = jsonify({"error": "Not found"})
+    response.status_code = 404
+    return response
 
 if __name__ == "__main__":
     HBNB_API_HOST = getenv('HBNB_API_HOST')
