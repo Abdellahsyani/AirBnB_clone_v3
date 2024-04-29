@@ -13,9 +13,16 @@ cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
-def teardown_appcontext(exeption):
+def teardown_appcontext(exception):
     """call the storage"""
     storage.close()
+
+@app.errorhandler(404)
+def not_found(error):
+    """handeling not found page (error 404)"""
+    response = jsonify({"error": "Not found"})
+    response.status_code = 404
+    return response
 
 if __name__ == "__main__":
     HBNB_API_HOST = getenv('HBNB_API_HOST')
