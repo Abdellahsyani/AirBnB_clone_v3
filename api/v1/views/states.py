@@ -16,12 +16,12 @@ def states():
         state_list = [state.to_dict() for state in states]
         return jsonify(state_list)
     else:
-        data = request.get_json(force=True, silent=True)
-        if data is None:
+        kwargs = request.get_json(force=True, silent=True)
+        if kwargs is None:
             abort(400, "Not a JSON")
-        if data.get('name') is None:
+        if kwargs.get('name') is None:
             abort(400, "Missing name")
-        state = State(**data)
+        state = State(**kwargs)
         state.save()
         return jsonify(state.to_dict()), 201
 
