@@ -13,12 +13,13 @@ def states():
     """handle get and post requests"""
     if request.method == 'GET':
         states = storage.all("State").values()
-        return jsonify(list(map(lambda x: x.to_dict(), states)))
+        state_list = [state.to_dict() for state in states]
+        return jsonify(state_list)
     else:
-        Requests = request.get_json(force=True, silent=True)
-        if Requests is None:
+        kwargs = request.get_json(force=True, silent=True)
+        if kwargs is None:
             abort(400, "Not a JSON")
-        if Requests.get('name') is None:
+        if kwargs.get('name') is None:
             abort(400, "Missing name")
         state = State(**kwargs)
         state.save()
@@ -39,11 +40,11 @@ def state(state_id):
         storage.save()
         return jsonify({})
     else:
-        Requests = request.get_json(force=True, silent=True)
-        if Requests is None:
+        kwargs = request.get_json(force=True, silent=True)
+        if kwargs is None:
             abort(400, "Not a JSON")
-        for key in Requests:
+        for key in kwargs:
             if key not in ('id', 'created_at', 'updated_at'):
-                setattr(state, key, Requests.get(key))
+                setattr(state, key, kwargs.get(key))
         storage.save()
         return jsonify(state.to_dict())
