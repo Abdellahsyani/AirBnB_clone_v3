@@ -16,8 +16,14 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-classes = {"Amenity": Amenity, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {
+    "Amenity": Amenity,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
 
 
 class DBStorage:
@@ -64,24 +70,29 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
+    def get(self, cls, id):
+        """retrieves an object"""
+        # It's more efficient to use the database search tool
+        if cls not in classes.values():
+            raise TypeError(f"Unkonwn type {cls.__class__}")
+        obj = self.__session.query(cls).filter_by(id=id).first()
+        key = "{}.{}".format(cls.__name__, id)
+        return obj
+
+    def count(self, cls=None):
+        """counts the number of objects in storage"""
+        if cls not in (*classes.values(), None):
+            raise TypeError(f"Unkonwn type \"{cls.__name__}\"")
+        if cls:
+            return self.__session.query(cls).count()
+        return sum([self.__session.query(c).count() for c in classes.values()])
+
     def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
-
-    def get(self, cls, id):
-        """retrieves an object"""
-        key = "{}.{}".format(cls.__name__, id)
-        for k, value in self.all(cls).items():
-            if k == key:
-                return value
-        return None
-
-    def count(self, cls=None):
-        """counts the number of objects in storage"""
-        return (len(self.all(cls)))
 
     def close(self):
         """call remove() method on the private session attribute"""

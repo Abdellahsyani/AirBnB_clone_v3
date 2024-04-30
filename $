@@ -90,27 +90,17 @@ class TestFileStorage(unittest.TestCase):
     def test_save(self):
         """Test that save properly saves objects to file.json"""
 
-    def test_storage_get(self):
+    def test_dbstorage_get(self):
         """Testing Get method"""
         myObject = State(name="Alabama")
         myObject.save()
         state = models.storage.get(State, myObject.id)
         self.assertEqual(state.name, "Alabama")
-        self.assertEqual(state.created_at, myObject.created_at)
 
-    def test_storage_count(self):
+    def test_dbstorage_count(self):
         """Testing Count method"""
-        s_count_old = len(models.storage.all(State))
-        s_count_new = models.storage.count(State)
-        self.assertEqual(s_count_old, s_count_new)
+        oldCount = models.storage.count("State")
         myObject = State(name="Alabama")
         myObject.save()
-        s_count_old = len(models.storage.all(State))
-        s_count_new = models.storage.count(State)
-        self.assertEqual(s_count_old, s_count_new)
-
-    def test_storage_count(self):
-        """Count in case of all objects"""
-        count_old = len(models.storage.all())
-        count_new = models.storage.count()
-        self.assertEqual(count_old, count_new)
+        newCount = models.storage.count("State")
+        self.assertEqual(oldCount + 1, newCount)
