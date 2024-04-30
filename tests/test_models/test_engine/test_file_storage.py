@@ -16,11 +16,14 @@ from models.state import State
 from models.user import User
 import json
 import os
-import pep8 as pycodestyle
 import unittest
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
+try:
+    import pycodestyle as pep8
+except Exception as e:
+    import pep8
 
 
 class TestFileStorageDocs(unittest.TestCase):
@@ -124,7 +127,7 @@ class TestFileStorage(unittest.TestCase):
         fstorage.new(myObject)
         myId = myObject.id
         fstorage.save()
-        state = fstorage.get("State", myId)
+        state = fstorage.get(State, myId)
         self.assertEqual(state.name, "Alabama")
 
     @unittest.skipIf(models.storage_t == 'db', 'not testing file storage')

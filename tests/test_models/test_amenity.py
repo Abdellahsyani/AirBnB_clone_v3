@@ -8,9 +8,12 @@ import inspect
 import models
 from models import amenity
 from models.base_model import BaseModel
-import pep8 as pycodestyle
 import unittest
 Amenity = amenity.Amenity
+try:
+    import pycodestyle as pep8
+except Exception as e:
+    import pep8
 
 
 class TestAmenityDocs(unittest.TestCase):
