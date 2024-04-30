@@ -16,10 +16,10 @@ def attain_status():
 def stats():
     """/api/v1/stats route"""
     return jsonify({
-        "amenities": storage.count("Amenity\n"),
-        "cities": storage.count("City\n"),
-        "places": storage.count("Place\n"),
-        "reviews": storage.count("Review\n"),
-        "states": storage.count("State\n"),
-        "users": storage.count("User\n")
+        "amenities": storage.count("Amenity"),
+        "cities": storage.count("City"),
+        "places": storage.count("Place"),
+        "reviews": storage.count("Review"),
+        "states": storage.count("State"),
+        "users": storage.count("User")
     })
