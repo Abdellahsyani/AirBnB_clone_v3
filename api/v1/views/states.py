@@ -13,8 +13,7 @@ def states():
     """handle get and post requests"""
     if request.method == 'GET':
         states = storage.all("State").values()
-        state_list = [state.to_dict() for state in states]
-        return jsonify(state_list)
+        return jsonify(list(map(lambda x: x.to_dict(), states)))
     else:
         Requests = request.get_json(force=True, silent=True)
         if Requests is None:
