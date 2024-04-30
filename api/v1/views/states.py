@@ -21,7 +21,7 @@ def states():
             abort(400, "Not a JSON")
         if data.get('name') is None:
             abort(400, "Missing name")
-        state = State(**kwargs)
+        state = State(**data)
         state.save()
         return jsonify(state.to_dict()), 201
 
