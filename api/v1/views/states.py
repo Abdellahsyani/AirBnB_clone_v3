@@ -40,11 +40,11 @@ def state(state_id):
         storage.save()
         return jsonify({})
     else:
-        data = request.get_json(force=True, silent=True)
-        if data is None:
+        request_data = request.get_json(force=True, silent=True)
+        if request_data is None:
             abort(400, "Not a JSON")
-        for key in data:
+        for key in request_data:
             if key not in ('id', 'created_at', 'updated_at'):
-                setattr(state, key, data.get(key))
+                setattr(state, key, request_data.get(key))
         storage.save()
         return jsonify(state.to_dict())
