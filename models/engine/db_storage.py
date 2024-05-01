@@ -69,20 +69,26 @@ class DBStorage:
         """delete from the current database session obj if not None"""
         if obj is not None:
             self.__session.delete(obj)
+            self.save()
 
     def get(self, cls, id):
         """retrieves an object"""
         # It's more efficient to use the database search tool
+        classname = cls
+        if type(cls) is str:
+            cls = classes.get(cls.capitalize())
         if cls not in classes.values():
-            raise TypeError(f"Unkonwn type {cls.__class__}")
+            raise TypeError(f"Unkonwn type {classname}")
         obj = self.__session.query(cls).filter_by(id=id).first()
-        key = "{}.{}".format(cls.__name__, id)
         return obj
 
     def count(self, cls=None):
         """counts the number of objects in storage"""
+        classname = cls
+        if type(cls) is str:
+            cls = classes.get(cls.capitalize(), "notFound")
         if cls not in (*classes.values(), None):
-            raise TypeError(f"Unkonwn type \"{cls.__name__}\"")
+            raise TypeError(f"Unkonwn type {classname}")
         if cls:
             return self.__session.query(cls).count()
         return sum([self.__session.query(c).count() for c in classes.values()])

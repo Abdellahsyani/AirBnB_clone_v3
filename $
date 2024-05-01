@@ -104,3 +104,7 @@ class TestFileStorage(unittest.TestCase):
         myObject.save()
         newCount = models.storage.count("State")
         self.assertEqual(oldCount + 1, newCount)
+
+    def test_get_method(self):
+        """Testing get method"""
+        print(models.storage.get("f0e6e155-4df3-4652-aa8c-9e8d1121c133"))

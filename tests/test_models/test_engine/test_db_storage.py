@@ -98,7 +98,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(state.name, "Alabama")
         self.assertEqual(state.created_at, myObject.created_at)
 
-    def test_storage_count(self):
+    def test_storage_count_1(self):
         """Testing Count method"""
         s_count_old = len(models.storage.all(State))
         s_count_new = models.storage.count(State)
@@ -106,10 +106,10 @@ class TestFileStorage(unittest.TestCase):
         myObject = State(name="Alabama")
         myObject.save()
         s_count_old = len(models.storage.all(State))
-        s_count_new = models.storage.count(State)
+        s_count_new = models.storage.count("stAte")
         self.assertEqual(s_count_old, s_count_new)
 
-    def test_storage_count(self):
+    def test_storage_count_2(self):
         """Count in case of all objects"""
         count_old = len(models.storage.all())
         count_new = models.storage.count()

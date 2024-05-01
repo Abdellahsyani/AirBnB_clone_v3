@@ -7,57 +7,60 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route("/states/<state_id>/cities", strict_slashes=False)
-def cities(state_id):
-    """Retrieves the list of all City objects of a State"""
-    cities = []
-    states = list(storage.all(State).values())
-    state = None
-    for st in states:
-        if st.id == state_id:
-            state = st
-            break
+@app_views.route(
+    "/states/<state_id>/cities",
+    strict_slashes=False,
+    methods=['GET']
+)
+def get_state_cities(state_id):
+    """Retrieves the list of all cities in a state"""
+    state = storage.get("State", str(state_id))
     if state:
-        for city in storage.all(City).values():
-            if city.state_id == state.id:
-                cities.append(city.to_dict())
+        cities = [city.to_dict() for city in state.cities]
+        return jsonify(cities)
     else:
         abort(404)
-    return jsonify(cities)
 
 
-@app_views.route("/cities/<city_id>", strict_slashes=False)
-def city(city_id):
-    """find city_id"""
-    cities = storage.all(City).values()
-    for city in cities:
-        if city.id == city_id:
-            return jsonify(city.to_dict())
-    abort(404)
-
-
-@app_views.route("/cities/<city_id>", methods=["DELETE"], strict_slashes=False)
-def delete_city(city_id):
-    """delete city object"""
-    city = storage.get(City, city_id)
-    response = jsonify({})
-    response.status_code = 200
+@app_views.route(
+    "/cities/<city_id>",
+    strict_slashes=False,
+    methods=['GET']
+)
+def get_city(city_id):
+    """Retrieves city object by id, or raise 404 error"""
+    city = storage.get("City", city_id)
     if city:
-        storage.delete(city)
-        storage.save()
-        return (response)
+        return jsonify(city.to_dict())
+    else:
+        abort(404)
+
+
+@app_views.route(
+    "/cities/<city_id>",
+    methods=["DELETE"],
+    strict_slashes=False
+)
+def delete_city(city_id):
+    """Delete city object by id if or abort"""
+    city = storage.get(City, city_id)
+    if city:
+        city.delete()
+        return jsonify({})
     else:
         abort(404)
 
 
 @app_views.route(
     "/states/<state_id>/cities",
-    methods=["POST"], strict_slashes=False)
-def post_city(state_id):
-    """create a new city"""
+    methods=["POST"],
+    strict_slashes=False
+)
+def new_city(state_id):
+    """create new city"""
     data = request.get_json(force=True, silent=True)
-    state = storage.get(State, state_id)
-    if state is None:
+    state = storage.get("State", state_id)
+    if not state:
         abort(404)
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
@@ -69,13 +72,17 @@ def post_city(state_id):
     return jsonify(city.to_dict()), 201
 
 
-@app_views.route("/cities/<city_id>", methods=["PUT"], strict_slashes=False)
+@app_views.route(
+    "/cities/<city_id>",
+    methods=["PUT"],
+    strict_slashes=False
+)
 def put_city(city_id):
-    """update object"""
-    data = request.get_json(force=True, silent=True)
-    city = storage.get(City, city_id)
+    """Update object"""
+    city = storage.get("City", city_id)
     if city is None:
         abort(404)
+    data = request.get_json(force=True, silent=True)
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
     for key in data.keys():

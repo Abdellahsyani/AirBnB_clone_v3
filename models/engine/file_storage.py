@@ -13,8 +13,15 @@ from models.state import State
 from models.user import User
 import models
 
-classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {
+    "Amenity": Amenity,
+    "BaseModel": BaseModel,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
 
 
 class FileStorage:
@@ -68,14 +75,22 @@ class FileStorage:
 
     def get(self, cls, id):
         """retrieves an object"""
+        classname = cls
+        if type(cls) is str:
+            cls = classes.get(cls.capitalize())
+        if cls not in classes.values():
+            raise TypeError(f"Unkonwn type {classname}")
         key = "{}.{}".format(cls.__name__, id)
-        for k, value in self.all(cls).items():
-            if k == key:
-                return value
-        return None
+        obj = self.all(cls).get(key)
+        return obj
 
     def count(self, cls=None):
         """counts the number of objects in storage"""
+        classname = cls
+        if type(cls) is str:
+            cls = classes.get(cls.capitalize(), "notfound")
+        if cls not in (*classes.values(), None):
+            raise TypeError(f"Unkonwn type {classname}")
         return (len(self.all(cls)))
 
     def close(self):
