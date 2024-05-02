@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""views blueprints"""
+"""
+views blueprints
+"""
 
 from flask import Blueprint
 

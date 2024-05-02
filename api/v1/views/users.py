@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" City parameters """
+"""
+City parameters
+"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -81,5 +83,6 @@ def update_user(user_id):
     for key in data.keys():
         if key not in ["id", "email", "created_at", "updated_at"]:
             setattr(user, key, data[key])
+    user.save()
     storage.save()
     return jsonify(user.to_dict()), 200
