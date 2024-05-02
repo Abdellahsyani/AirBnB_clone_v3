@@ -7,8 +7,9 @@ from models import storage
 from models.state import State
 
 
-@app_views.route("/states",
-    methods=['GET'], 
+@app_views.route(
+    "/states",
+    methods=['GET'],
     strict_slashes=False
 )
 def get_states():
@@ -18,8 +19,9 @@ def get_states():
     return jsonify(states_list)
 
 
-@app_views.route("/states",
-    methods=['POST'], 
+@app_views.route(
+    "/states",
+    methods=['POST'],
     strict_slashes=False
 )
 def new_state():
