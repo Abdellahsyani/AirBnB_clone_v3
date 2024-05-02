@@ -77,7 +77,7 @@ def new_city(state_id):
     methods=["PUT"],
     strict_slashes=False
 )
-def put_city(city_id):
+def update_city(city_id):
     """Update object"""
     city = storage.get("City", city_id)
     if city is None:
