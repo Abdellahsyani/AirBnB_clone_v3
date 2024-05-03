@@ -14,7 +14,7 @@ cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
-def teardown_appcontext(exception):
+def teardown_app(exception):
     """This used to keep always the data up to date:
     The session that created by SQLAchemy is always keeping a connection that
     is isolated to other possible existing connections. Here we forced it to
