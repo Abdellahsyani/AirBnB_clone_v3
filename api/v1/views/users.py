@@ -8,23 +8,23 @@ from models.user import User
 
 @app_views.route(
     "/users",
-    strict_slashes=False,
-    methods=['GET']
+    strict_slashes=False
 )
 def get_users():
     """Retrieves the list of all users"""
-    users = storage.all(User).values()
-    return jsonify([user.to_dict() for user in users])
+    users = []
+    for user in storage.all(User).values():
+        users.append(user.to_dict())
+    return jsonify(users)
 
 
 @app_views.route(
     "/users/<user_id>",
-    strict_slashes=False,
-    methods=['GET']
+    strict_slashes=False
 )
 def get_user(user_id):
     """Retrieves user by id or abort"""
-    user = storage.get("User", str(user_id))
+    user = storage.get(User, user_id)
     if user:
         return jsonify(user.to_dict())
     else:
@@ -33,15 +33,15 @@ def get_user(user_id):
 
 @app_views.route(
     "/users/<user_id>",
-    strict_slashes=False,
-    methods=['DELETE']
+    strict_slashes=False
 )
 def remove_user(user_id):
     """Delete a user by its id, or abort"""
-    user = storage.get("User", user_id)
+    user = storage.get(User, user_id)
     if user:
-        user.delete()
-        return jsonify({})
+        storage.delete(user)
+        storage.save()
+        return jsonify({}), 200
     else:
         abort(404)
 
