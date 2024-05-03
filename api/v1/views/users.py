@@ -6,7 +6,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.route("/users", strict_slashes=False)
+@app_views.route("/users", methods=['GET'], strict_slashes=False)
 def users():
     """Get all user objects."""
     users = []
@@ -15,7 +15,7 @@ def users():
     return jsonify(users)
 
 
-@app_views.route("/users/<user_id>", strict_slashes=False)
+@app_views.route("/users/<user_id>", methods=['GET'], strict_slashes=False)
 def user(user_id):
     """Get user by user ID."""
     user = storage.get(User, user_id)
