@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-Users api
-"""
+"""Users api long and I don't what to do more than that!"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
