@@ -17,13 +17,22 @@ from models.user import User
 import json
 import os
 import unittest
-DBStorage = db_storage.DBStorage
-classes = {"Amenity": Amenity, "City": City, "Place": Place,
-           "Review": Review, "State": State, "User": User}
+from hashlib import md5
 try:
     import pycodestyle as pep8
 except Exception as e:
     import pep8
+
+
+classes = {
+    "Amenity": Amenity,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
+DBStorage = db_storage.DBStorage
 
 
 class TestDBStorageDocs(unittest.TestCase):
@@ -114,3 +123,32 @@ class TestFileStorage(unittest.TestCase):
         count_old = len(models.storage.all())
         count_new = models.storage.count()
         self.assertEqual(count_old, count_new)
+
+    def test_pass_hash(self):
+        """The new password is hashed before it is stored"""
+        password = "happiness"
+        u = User(email="testing@hbnb.io", password=password)
+        hashed_pass = md5(password.encode()).hexdigest()
+        self.assertEqual(hashed_pass, u.password)
+
+    def test_no_rehash(self):
+        """If the password exists, don't hash it again"""
+        pw = "happiness"
+        u = User(email="testing@hbnb.io", password=pw)
+        id = u.id
+        u.save()
+        models.storage.reload()
+        some_u = models.storage.get("User", id)
+        some_pw = some_u.password
+        self.assertEqual(some_pw, md5(pw.encode()).hexdigest())
+
+    def test_pass_hidden(self):
+        """to_dict is not showing the passowrd"""
+        password = "happiness"
+        u = User(email="testing@hbnb.io", password=password)
+        id = u.id
+        u.save()
+        self.assertIsNone(u.to_dict().get("password"))
+        models.storage.reload()
+        u = models.storage.get("User", id)
+        self.assertIsNone(u.to_dict().get("password"))
