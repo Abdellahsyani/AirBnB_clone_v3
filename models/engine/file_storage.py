@@ -89,7 +89,7 @@ class FileStorage:
         classname = cls
         if type(cls) is str:
             cls = classes.get(cls.capitalize(), "notfound")
-        if cls not in classes.values() or cls is None):
+        if cls not in classes.values() or cls is None:
             raise TypeError("Unkonwn type {}".format(classname))
         return (len(self.all(cls)))
 
