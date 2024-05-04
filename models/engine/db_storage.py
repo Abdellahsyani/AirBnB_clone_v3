@@ -86,8 +86,8 @@ class DBStorage:
         """counts the number of objects in storage"""
         classname = cls
         if type(cls) is str:
-            cls = classes.get(cls.capitalize(), "notFound")
-        if cls not in (*list(classes.values()), None):
+            cls = classes.get(cls.capitalize())
+        if cls not in classes.values() or cls is None:
             raise TypeError("Unkonwn type {}".format(classname))
         if cls:
             return self.__session.query(cls).count()
