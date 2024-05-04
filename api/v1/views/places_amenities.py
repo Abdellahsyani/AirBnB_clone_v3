@@ -27,7 +27,7 @@ def get_place_amenities(place_id):
     strict_slashes=False,
     methods=['DELETE']
 )
-def remove_review(place_id, amenity_id):
+def remove_place_amenity(place_id, amenity_id):
     """Delete an amenity from place, or raise 404 error"""
     place = storage.get("Placa", str(place_id))
     amenity = storage.get("Amenity", str(amenity_id))

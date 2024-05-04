@@ -15,7 +15,6 @@ from models.city import City
 def get_places_city(city_id):
     """Retrieves all places in a city, or raise 404 error"""
     city = storage.get("City", str(city_id))
-    print(city)
     if city:
         places = city.places
         return jsonify([place.to_dict() for place in places])
