@@ -29,11 +29,12 @@ def get_place_amenities(place_id):
 )
 def remove_place_amenity(place_id, amenity_id):
     """Delete an amenity from place, or raise 404 error"""
-    place = storage.get("Placa", str(place_id))
+    place = storage.get("Place", str(place_id))
     amenity = storage.get("Amenity", str(amenity_id))
     if not (place and amenity and amenity in place.amenities):
         abort(404)
     place.amenities.remove(amenity)
+    storage.save()
     return jsonify({}), 200
 
 
