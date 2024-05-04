@@ -78,7 +78,7 @@ class DBStorage:
         if type(cls) is str:
             cls = classes.get(cls.capitalize())
         if cls not in classes.values():
-            raise TypeError(f"Unkonwn type {classname}")
+            raise TypeError("Unkonwn type {}".format(classname))
         obj = self.__session.query(cls).filter_by(id=id).first()
         return obj
 
@@ -88,7 +88,7 @@ class DBStorage:
         if type(cls) is str:
             cls = classes.get(cls.capitalize(), "notFound")
         if cls not in (*classes.values(), None):
-            raise TypeError(f"Unkonwn type {classname}")
+            raise TypeError("Unkonwn type {}".format(classname))
         if cls:
             return self.__session.query(cls).count()
         return sum([self.__session.query(c).count() for c in classes.values()])
