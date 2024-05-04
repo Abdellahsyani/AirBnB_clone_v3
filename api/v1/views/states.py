@@ -21,7 +21,7 @@ def get_states():
 
 @app_views.route(
     "/states",
-    methods=['POST'],
+    methods=['POST'], 
     strict_slashes=False
 )
 def new_state():
@@ -58,7 +58,7 @@ def remove_state(state_id):
 )
 def get_state(state_id):
     """Retrieves a State object if exist"""
-    state = storage.get(State, str(state_id))
+    state = storage.get("State", str(state_id))
     if state is None:
         abort(404)
     return jsonify(state.to_dict())
@@ -72,6 +72,7 @@ def get_state(state_id):
 def update_state(state_id):
     """Update state with the corresponding id"""
     request_data = request.get_json(force=True, silent=True)
+    state = storage.get("State", str(state_id))
     if request_data is None:
         abort(400, "Not a JSON")
     for key in request_data:
