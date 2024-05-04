@@ -87,7 +87,7 @@ class DBStorage:
         classname = cls
         if type(cls) is str:
             cls = classes.get(cls.capitalize(), "notFound")
-        if cls not in (*classes.values(), None):
+        if cls not in (*list(classes.values()), None):
             raise TypeError("Unkonwn type {}".format(classname))
         if cls:
             return self.__session.query(cls).count()
