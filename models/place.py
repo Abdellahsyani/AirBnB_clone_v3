@@ -11,11 +11,11 @@ if models.storage_t == 'db':
     place_amenity = Table('place_amenity', Base.metadata,
                           Column('place_id', String(60),
                                  ForeignKey('places.id', onupdate='CASCADE',
-                                            cascade="all, delete-orphan"),
+                                            ondelete='CASCADE'),
                                  primary_key=True),
                           Column('amenity_id', String(60),
                                  ForeignKey('amenities.id', onupdate='CASCADE',
-                                            cascade="all, delete-orphan"),
+                                            ondelete='CASCADE'),
                                  primary_key=True))
 
 
@@ -36,8 +36,7 @@ class Place(BaseModel, Base):
         reviews = relationship(
             "Review",
             backref="place",
-            cascade="all, delete-orphan"
-        )
+            cascade="all, delete-orphan")
         amenities = relationship("Amenity", secondary="place_amenity",
                                  backref="place_amenities",
                                  viewonly=False)
