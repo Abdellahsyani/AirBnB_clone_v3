@@ -52,7 +52,7 @@ class FileStorage:
         """serializes __objects to the JSON file (path: __file_path)"""
         json_objects = {}
         for key in self.__objects:
-            json_objects[key] = self.__objects[key].to_dict(file_writing=True)
+            json_objects[key] = self.__objects[key].to_dict(file_writing=False=True)
         with open(self.__file_path, 'w') as f:
             json.dump(json_objects, f)
 
@@ -79,7 +79,7 @@ class FileStorage:
         if type(cls) is str:
             cls = classes.get(cls.capitalize())
         if cls not in classes.values():
-            raise TypeError(f"Unkonwn type {classname}")
+            raise TypeError("Unkonwn type {}".format(classname))
         key = "{}.{}".format(cls.__name__, id)
         obj = self.all(cls).get(key)
         return obj
@@ -90,7 +90,7 @@ class FileStorage:
         if type(cls) is str:
             cls = classes.get(cls.capitalize(), "notfound")
         if cls not in (*classes.values(), None):
-            raise TypeError(f"Unkonwn type {classname}")
+            raise TypeError("Unkonwn type {}".format(classname))
         return (len(self.all(cls)))
 
     def close(self):
