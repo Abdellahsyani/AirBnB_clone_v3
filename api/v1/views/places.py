@@ -122,6 +122,7 @@ def cities_cityid(cities_ids):
             cities.append(city)
     return cities
 
+
 def places_cities(cities):
     """Get list of all places in cities"""
     places = []
@@ -132,6 +133,7 @@ def places_cities(cities):
 
 
 def places_dict(places):
+    """Convert places objects list into a list of a serializable dicts"""
     dicts = []
     for place in places:
         p = place.to_dict()
@@ -157,28 +159,35 @@ def place_search():
     filters = request.get_json(force=True, silent=True)
     if filters is None:
         return jsonify({"error": "Not a JSON"}), 400
+    if filters is None:
+        return jsonify({"error": "Not a JSON"}), 400
     city_ids = filters.get("cities")
     state_ids = filters.get("states")
     amenity_ids = filters.get("amenities")
     places = []
     cities = []
-    
+
     if not (city_ids or state_ids or amenity_ids):
         all_places = storage.all(Place).values()
-        return [pl.to_dict() for pl in all_places]
-    if city_ids:
-        cities.extend(cities_cityid(city_ids))
-    if state_ids:
-        cities.extend(cites_stateid(state_ids))
+        return jsonify([pl.to_dict() for pl in all_places])
     if amenity_ids and not (state_ids or city_ids):
         places = list(storage.all(Place).values())
+    if city_ids:
+        # All ciities giving by the user
+        cities.extend(cities_cityid(city_ids))
+    if state_ids:
+        # All ciities in states giving by the user
+        cities.extend(cites_stateid(state_ids))
     if cities:
-        places = places_cities(cities)
+        # Note that cities is holding all the possible cities object given by
+        # the user and also all the cities in the states, that could lead to
+        # having some city appears more than one, that's why we had to use set
+        places = places_cities(set(cities))
 
     if amenity_ids:
+        # Filter by only the places that have the amenities giving by the user
         places = list(filter(
             lambda p: set(amenity_ids).issubset([a.id for a in p.amenities]),
             places
         ))
-
     return jsonify(places_dict(places))
